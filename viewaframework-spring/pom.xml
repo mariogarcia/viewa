@@ -1,0 +1,31 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<parent>
+		<groupId>org.viewaframework</groupId>
+		<artifactId>viewaframework</artifactId>
+		<version>1.0.8-SNAPSHOT</version>
+	</parent>
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>viewaframework-spring</artifactId>
+	<name>viewaframework-spring</name>
+	<dependencies>
+		<dependency>
+			<groupId>org.viewaframework</groupId>
+			<artifactId>viewaframework-api</artifactId>
+			<version>${project.parent.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.viewaframework</groupId>
+			<artifactId>viewaframework-core</artifactId>
+			<version>${project.parent.version}</version>
+		</dependency>
+		<dependency>
+      		<groupId>org.springframework</groupId>
+      		<artifactId>spring-context</artifactId>
+      		<version>3.0.0.RELEASE</version>
+      		<scope>compile</scope>
+		</dependency>
+	</dependencies>
+	<properties>
+		<site.template>${project.parent.basedir}/src/site/vm/maven-site.vm</site.template>
+	</properties>
+</project>

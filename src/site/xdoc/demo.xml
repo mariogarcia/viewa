@@ -1,0 +1,29 @@
+<document>
+	<properties>
+		<title>Demo</title>
+	</properties>
+	<head></head>
+	<body>
+		<!-- The body of the document contains a number of sections -->
+		<section name="Demo application">
+			<!-- Within sections, any XHTML can be used -->
+			<h1>We are creating a new example coming up for the next version</h1>
+<!-- 			<p>In this section you'll some examples of what you can do with Viewa. If you want to see the -->
+<!-- 				source code download it from the sourceforge site. -->
+<!-- 			</p> -->
+<!-- 			<table> -->
+<!-- 				<tr> -->
+<!-- 					<td> -->
+<!-- 						This little application shows some nice places around the world: The tallest mountains, the seven -->
+<!-- 						wonders... It requires network connection (to Wikipedia). -->
+<!-- 					</td> -->
+<!-- 					<td> -->
+<!-- 				<a href="http://www.viewaframework.org/demos/most/jnlp/demo.jnlp"> -->
+<!-- 					<img src="./images/jws-launch-button.png" /> -->
+<!-- 				</a>						 -->
+<!-- 					</td> -->
+<!-- 				</tr> -->
+<!-- 			</table>			 -->
+		</section>
+	</body>
+</document>
