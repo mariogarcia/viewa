@@ -214,19 +214,21 @@ public class DynamicTableModel <T> extends AbstractTableModel
 					for (int i = minIndex ; i<=maxIndex;i++){
 						int realIndex = table.convertRowIndexToModel(i);
 						T value = getRow(realIndex);
-						this.selectedObjects.add(value);
-					 /* Always the first occurrence is the result of calling getSelectedObject() */
-						if (i == minIndex){
-							this.selectedObject = value;
-						}
-						if (logger.isDebugEnabled()){
-							logger.debug(
-								new StringBuilder().
-									append("[M:").append(realIndex).
-									append(" | V:").append(minIndex ++).
-									append("] ").append(value).toString());
-						}
-					}					
+                        if (table.getSelectionModel().isSelectedIndex(i)) {
+						    this.selectedObjects.add(value);
+                         /* Always the first occurrence is the result of calling getSelectedObject() */
+                            if (i == minIndex){
+                                this.selectedObject = value;
+                            }
+                            if (logger.isDebugEnabled()){
+                                logger.debug(
+                                    new StringBuilder().
+                                        append("[M:").append(realIndex).
+                                        append(" | V:").append(minIndex ++).
+                                        append("] ").append(value).toString());
+                            }
+                        }
+					}
 				}
 			} catch (Exception e1) {
 				logger.error(e1.getMessage());

@@ -58,7 +58,6 @@ public class MasterViewPanel<T> extends JXTitledPanel{
 			this.table.setEditable(false);
 			this.table.setShowHorizontalLines(false);
 			this.table.setShowVerticalLines(false);
-			this.table.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 			this.table.setHighlighters(HighlighterFactory.createAlternateStriping());
 			this.table.setName("table");
 		}

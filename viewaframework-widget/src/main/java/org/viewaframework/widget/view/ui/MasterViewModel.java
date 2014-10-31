@@ -180,32 +180,34 @@ public class MasterViewModel<T> extends AbstractTableModel
 	 * @see javax.swing.event.ListSelectionListener#valueChanged(javax.swing.event.ListSelectionEvent)
 	 */
 	public void valueChanged(ListSelectionEvent e) {
-		if (!e.getValueIsAdjusting()){				
+		if (!e.getValueIsAdjusting()){
 			int minIndex = table.getSelectionModel().getMinSelectionIndex();
-			int maxIndex = table.getSelectionModel().getMaxSelectionIndex();			
+			int maxIndex = table.getSelectionModel().getMaxSelectionIndex();
 			try {
-				if (minIndex >= 0){					
+				if (minIndex >= 0){
 					this.selectedObjects.clear();
 					for (int i = minIndex ; i<=maxIndex;i++){
 						int realIndex = table.convertRowIndexToModel(i);
 						T value = getRow(realIndex);
-						this.selectedObjects.add(value);
-					 /* Always the first occurrence is the result of calling getSelectedObject() */
-						if (i == minIndex){
-							this.selectedObject = value;
-						}
-						if (logger.isDebugEnabled()){
-							logger.debug(
-								new StringBuilder().
-									append("[M:").append(realIndex).
-									append(" | V:").append(minIndex ++).
-									append("] ").append(value).toString());
-						}
-					}					
+                        if (table.getSelectionModel().isSelectedIndex(i)) {
+                            this.selectedObjects.add(value);
+                         /* Always the first occurrence is the result of calling getSelectedObject() */
+                            if (i == minIndex){
+                                this.selectedObject = value;
+                            }
+                            if (logger.isDebugEnabled()){
+                                logger.debug(
+                                    new StringBuilder().
+                                        append("[M:").append(realIndex).
+                                        append(" | V:").append(minIndex ++).
+                                        append("] ").append(value).toString());
+                            }
+                        }
+					}
 				}
 			} catch (Exception e1) {
 				logger.error(e1.getMessage());
-			} 
+			}
 		}
 	}
 }
