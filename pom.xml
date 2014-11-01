@@ -4,7 +4,7 @@
 	<groupId>org.viewaframework</groupId>
 	<artifactId>viewaframework</artifactId>
 	<name>viewaframework</name>
-	<version>1.0.8-SNAPSHOT</version>
+	<version>1.0.8</version>
 	<packaging>pom</packaging>
 	<description>Desktop Application Framework</description>
 	<url>http://www.viewaframework.org</url>
@@ -38,15 +38,11 @@
 			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
 		</license>
 	</licenses>
-	<distributionManagement>
+    <distributionManagement>
 		<repository>
-			<id>viewaframework.sourceforge.net</id>
-			<url>sftp://viewaframework@frs.sourceforge.net/home/project-web/viewaframework/htdocs/m2-repo</url>
+			<id>bintray-marioggar-maven-viewa</id>
+            <url>https://api.bintray.com/maven/marioggar/maven/viewa</url>
 		</repository>
-		<site>
-			<id>viewaframework.sourceforge.net</id>
-			<url>sftp://viewaframework@frs.sourceforge.net/home/project-web/viewaframework/htdocs</url>
-		</site>
 	</distributionManagement>
 	<!-- ************************************************************************** -->
 	<!-- ******************************** MODULES ********************************* -->
