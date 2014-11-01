@@ -419,8 +419,8 @@ public class PaginationPanel extends javax.swing.JPanel {
 	    jxCollapsiblePanel1 = new org.jdesktop.swingx.JXCollapsiblePane();
 		jFormattedTextField1 = new javax.swing.JFormattedTextField(new PaginationNumberFormatter());
 
-	    setName("Form"); // NOI18N
-	    
+	    setName("paginationPanel"); // NOI18N
+
 	    jLabel1.setName(Names.RECORDS_SHOWN.name());
 
 	    jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(ranges));
