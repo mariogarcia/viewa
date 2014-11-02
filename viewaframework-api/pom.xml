@@ -2,7 +2,7 @@
 	<parent>
     	<groupId>org.viewaframework</groupId>
     	<artifactId>viewaframework</artifactId>
-	    <version>1.0.9-SNAPSHOT</version>
+	    <version>1.0.9</version>
   	</parent>
   	<properties>
   		<site.template>${project.parent.basedir}/src/site/vm/maven-site.vm</site.template>
