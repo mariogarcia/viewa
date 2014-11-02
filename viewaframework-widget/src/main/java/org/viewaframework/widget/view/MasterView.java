@@ -8,7 +8,7 @@ import java.util.List;
 import javax.swing.JTable;
 
 import org.viewaframework.swing.MasterViewPanel;
-import org.viewaframework.view.DefaultViewContainerEditor;
+import org.viewaframework.view.DefaultViewContainer;
 import org.viewaframework.view.ViewActionDescriptor;
 import org.viewaframework.view.delegator.ActionDescriptorDelegator;
 import org.viewaframework.view.delegator.DefaultViewResourceDelegator;
@@ -24,7 +24,7 @@ import org.viewaframework.widget.view.ui.MasterViewModel;
  *
  * @param <E>
  */
-public abstract class MasterView<E> extends DefaultViewContainerEditor{
+public abstract class MasterView<E> extends DefaultViewContainer {
 
 	private List<MasterViewColumn> columns;
 	private List<Delegator> delegators;
