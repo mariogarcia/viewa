@@ -8,3 +8,7 @@ dependencies {
     compile group: 'commons-beanutils', name: 'commons-beanutils', version:'1.7.0'
     compile group: 'org.codehaus.groovy', name: 'groovy-all', version:'2.2.2'
 }
+
+test {
+    exclude '**/*TestBase*'
+}
