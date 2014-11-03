@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="org.viewaframework.swing.DynamicTableTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2014-11-03T21:37:06" hostname="manjaro" time="2.677">
+  <properties/>
+  <testcase name="testNaturalTableCreation" classname="org.viewaframework.swing.DynamicTableTest" time="2.677"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

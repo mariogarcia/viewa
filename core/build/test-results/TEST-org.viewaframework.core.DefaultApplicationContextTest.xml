@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="org.viewaframework.core.DefaultApplicationContextTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2014-11-03T21:36:30" hostname="manjaro" time="0.139">
+  <properties/>
+  <testcase name="testContext" classname="org.viewaframework.core.DefaultApplicationContextTest" time="0.139"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[Nov 03, 2014 9:36:30 PM org.viewaframework.core.AbstractApplicationLauncher <init>
+SEVERE: Application init failed: null
+Nov 03, 2014 9:36:30 PM org.viewaframework.util.ResourceLocator getImageIcon
+SEVERE: Unable to get ImageIcon from org/viewaframework/widget/icon/fan/img/misc/information.png
+Nov 03, 2014 9:36:30 PM org.viewaframework.annotation.processor.ListenersProcessor getResult
+SEVERE: Cant process listeners from: TestView [null]
+Nov 03, 2014 9:36:30 PM org.viewaframework.view.delegator.DefaultViewResourceDelegator handleObjectForClass
+WARNING: There's no custom user converter for the key: java.lang.String
+Nov 03, 2014 9:36:30 PM org.viewaframework.view.delegator.DefaultViewResourceDelegator handleObjectForClass
+WARNING: There's no custom user converter for the key: java.lang.String
+Nov 03, 2014 9:36:30 PM org.viewaframework.view.delegator.DefaultViewResourceDelegator handleObjectForClass
+WARNING: There's no custom user converter for the key: java.lang.String
+Nov 03, 2014 9:36:30 PM org.viewaframework.view.delegator.DefaultViewResourceDelegator handleObjectForClass
+WARNING: There's no custom user converter for the key: java.awt.Image
+Nov 03, 2014 9:36:30 PM org.viewaframework.view.delegator.DefaultViewResourceDelegator handleObjectForClass
+WARNING: There's no custom user converter for the key: java.lang.String
+Nov 03, 2014 9:36:30 PM org.viewaframework.annotation.processor.ListenersProcessor getResult
+SEVERE: Cant process listeners from: MyTrayView [null]
+Nov 03, 2014 9:36:30 PM org.viewaframework.view.delegator.DefaultViewResourceDelegator handleObjectForClass
+WARNING: There's no custom user converter for the key: java.awt.Image
+Nov 03, 2014 9:36:30 PM org.viewaframework.view.delegator.DefaultViewResourceDelegator inject
+WARNING: Cannot process the resource value: null
+Nov 03, 2014 9:36:30 PM org.viewaframework.view.delegator.DefaultViewResourceDelegator handleObjectForClass
+WARNING: There's no custom user converter for the key: java.lang.String
+Nov 03, 2014 9:36:30 PM org.viewaframework.view.delegator.DefaultViewResourceDelegator handleObjectForClass
+WARNING: There's no custom user converter for the key: java.awt.Image
+Nov 03, 2014 9:36:30 PM org.viewaframework.annotation.processor.ListenersProcessor getResult
+SEVERE: Cant process listeners from: DefaultViewContainerFrame [null]
+Nov 03, 2014 9:36:30 PM org.viewaframework.util.ViewActionDescriptorFileHandler getDocumentFromFile
+WARNING: Errors processing action descriptors from menu file: null
+Nov 03, 2014 9:36:30 PM org.viewaframework.view.delegator.DefaultViewResourceDelegator getCurrentViewBundle
+WARNING: There's no specific properties file for view 'rootViewId'
+Nov 03, 2014 9:36:30 PM org.viewaframework.view.delegator.DefaultViewResourceDelegator handleObjectForClass
+WARNING: There's no custom user converter for the key: java.lang.String
+Nov 03, 2014 9:36:30 PM org.viewaframework.view.delegator.DefaultViewResourceDelegator handleObjectForClass
+WARNING: There's no custom user converter for the key: java.lang.String
+Nov 03, 2014 9:36:30 PM org.viewaframework.view.delegator.DefaultViewResourceDelegator handleObjectForClass
+WARNING: There's no custom user converter for the key: java.lang.String
+Nov 03, 2014 9:36:30 PM org.viewaframework.view.delegator.DefaultViewResourceDelegator handleObjectForClass
+WARNING: There's no custom user converter for the key: java.lang.String
+Nov 03, 2014 9:36:30 PM org.viewaframework.view.delegator.DefaultViewResourceDelegator handleObjectForClass
+WARNING: There's no custom user converter for the key: java.lang.String
+Nov 03, 2014 9:36:30 PM org.viewaframework.view.delegator.DefaultViewResourceDelegator handleObjectForClass
+WARNING: There's no custom user converter for the key: java.awt.Image
+Nov 03, 2014 9:36:30 PM org.viewaframework.view.delegator.DefaultViewResourceDelegator handleObjectForClass
+WARNING: There's no custom user converter for the key: java.lang.String
+Nov 03, 2014 9:36:30 PM org.viewaframework.view.delegator.DefaultViewResourceDelegator handleObjectForClass
+WARNING: There's no custom user converter for the key: java.lang.String
+Nov 03, 2014 9:36:30 PM org.viewaframework.view.delegator.DefaultViewResourceDelegator handleObjectForClass
+WARNING: There's no custom user converter for the key: java.lang.String
+Nov 03, 2014 9:36:30 PM org.viewaframework.view.delegator.DefaultViewResourceDelegator handleObjectForClass
+WARNING: There's no custom user converter for the key: java.lang.String
+Nov 03, 2014 9:36:30 PM org.viewaframework.view.delegator.DefaultViewResourceDelegator handleObjectForClass
+WARNING: There's no custom user converter for the key: java.lang.String
+Nov 03, 2014 9:36:30 PM org.viewaframework.view.delegator.DefaultViewResourceDelegator handleObjectForClass
+WARNING: There's no custom user converter for the key: java.lang.String
+Nov 03, 2014 9:36:30 PM org.viewaframework.view.delegator.DefaultViewResourceDelegator handleObjectForClass
+WARNING: There's no custom user converter for the key: java.lang.String
+Nov 03, 2014 9:36:30 PM org.viewaframework.view.delegator.DefaultViewResourceDelegator handleObjectForClass
+WARNING: There's no custom user converter for the key: java.lang.String
+Nov 03, 2014 9:36:30 PM org.viewaframework.view.delegator.DefaultViewResourceDelegator handleObjectForClass
+WARNING: There's no custom user converter for the key: java.lang.String
+Nov 03, 2014 9:36:30 PM org.viewaframework.view.delegator.DefaultViewResourceDelegator handleObjectForClass
+WARNING: There's no custom user converter for the key: java.lang.String
+Nov 03, 2014 9:36:30 PM org.viewaframework.view.delegator.DefaultViewResourceDelegator handleObjectForClass
+WARNING: There's no custom user converter for the key: java.lang.String
+]]></system-err>
+</testsuite>

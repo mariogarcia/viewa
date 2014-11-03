@@ -1,0 +1,6 @@
+
+dependencies {
+    compile project(':api')
+    compile project(':core')
+    compile group: 'org.springframework', name: 'spring-context', version:'3.0.0.RELEASE'
+}

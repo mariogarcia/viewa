@@ -1,0 +1,9 @@
+rootProject.name = 'viewa'
+
+include 'api'
+include 'core'
+include 'docking'
+include 'spring'
+include 'widget'
+include 'test'
+include 'swing'

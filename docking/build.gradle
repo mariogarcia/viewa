@@ -1,0 +1,13 @@
+
+dependencies {
+    compile project(':api')
+    compile group: 'net.sourceforge.mydoggy', name: 'mydoggy-res', version:'1.4.2'
+    compile group: 'net.sourceforge.mydoggy', name: 'mydoggy-api', version:'1.4.2'
+    compile(group: 'net.sourceforge.mydoggy', name: 'mydoggy-plaf', version:'1.4.2') {
+        exclude(module: 'mydoggy-api')
+        exclude(module: 'mydoggy-res')
+    }
+    compile group: 'org.dockingframes', name: 'docking-frames-common', version:'1.0.8'
+    testCompile project(':test')
+    testCompile project(':core')
+}
