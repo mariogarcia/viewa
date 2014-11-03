@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="org.viewaframework.swing.binding.ComboBoxBindingTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2014-11-03T21:37:27" hostname="manjaro" time="2.07">
-  <properties/>
-  <testcase name="testListTest" classname="org.viewaframework.swing.binding.ComboBoxBindingTest" time="0.042"/>
-  <testcase name="testSelectionTest" classname="org.viewaframework.swing.binding.ComboBoxBindingTest" time="2.027"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>

@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="org.viewaframework.swing.binding.TableBindingTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2014-11-03T21:37:21" hostname="manjaro" time="5.185">
-  <properties/>
-  <testcase name="testAdding" classname="org.viewaframework.swing.binding.TableBindingTest" time="5.185"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>

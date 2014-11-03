@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="org.viewaframework.swing.DynamicTreeTableTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2014-11-03T21:37:09" hostname="manjaro" time="12.272">
-  <properties/>
-  <testcase name="testDynamicTreeTableWithInitList" classname="org.viewaframework.swing.DynamicTreeTableTest" time="4.204"/>
-  <testcase name="testDynamicTreeTableWithoutInitList" classname="org.viewaframework.swing.DynamicTreeTableTest" time="8.067"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>
