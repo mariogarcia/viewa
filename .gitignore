@@ -1,2 +1,7 @@
 target/
 **/target/*
+.gradle/
+gradle*
+gradle*.*
+build/
+**/build/*
