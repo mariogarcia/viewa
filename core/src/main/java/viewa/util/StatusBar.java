@@ -25,7 +25,7 @@ import javax.swing.JProgressBar;
  */
 public class StatusBar extends JPanel {
 
-	private static final String PROGRESS_INFO_BUTTON_ICON ="org/viewaframework/widget/icon/fan/img/misc/information.png";
+	private static final String PROGRESS_INFO_BUTTON_ICON ="viewa/util/information.png";
 	//[ID: 2891883]: StatusBar info button can't be accessed
 	public static final String PROGRESS_INFO_BUTTON = "progressInfoButton";
 	public static final String LEFT_PANEL_LABEL = "applicationLeftPanelLabel";

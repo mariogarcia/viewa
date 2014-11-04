@@ -1,6 +1,8 @@
 allprojects  {
     group = 'org.viewaframework'
     version = '1.1.0-SNAPSHOT'
+
+    apply plugin: 'maven'
 }
 
 subprojects {
@@ -11,8 +13,9 @@ subprojects {
 
     repositories {
         mavenLocal()
+        mavenCentral()
 
-        maven { url "http://repo.maven.apache.org/maven2" }
+        maven { url "http://download.java.net/maven/2/" }
         maven { url "http://download.java.net/maven/2/" }
     }
 
