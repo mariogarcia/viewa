@@ -3,3 +3,7 @@ Java Desktop Application
 :numbered:                                                                                                                 
 :apiSrc: ../../api/src/main/java
 
+include::01_intro.ad[]
+
+include::02_getting_started.ad[]
+

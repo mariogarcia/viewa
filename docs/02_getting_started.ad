@@ -1,0 +1,122 @@
+== Installation 
+
+== Getting Started
+
+(TODO LAZYBONES)
+
+Every Viewa project has a *viewa.properties* in the class path. This file is used for startup options,
+like the locale, and the properties that are going to be showed in the splash-screen (if any). It
+has the following properties:
+
+[source, properties]
+----
+include::../example/src/main/resources/viewa.properties[]
+----
+
+In this case the application is called “yourartifact” in version 1.0-SNAPSHOT , it's not going to
+translated in  different languages and there's no splash screen yet. 
+
+The quick-start archetype also built a main entry point called MyApplication.java. 
+
+[source, java]
+----
+include::../example/src/main/java/viewa/example/MyApplication.java[]
+----
+
+The *viewa.core.DefaultApplication* class is a default implementation of
+*viewa.core.Application* interface which configures and builds the application.  Inside
+the main method we can see this call:
+
+[source,java]
+----
+new DefaultApplicationLauncher().execute(MyApplication.class);
+----
+
+The ApplicationLauncher class is a helper class for executing the application keeping the UI
+initialization apart from the non UI initialization classes. It creates different threads to do this
+job.  If you execute the code you will see this: 
+
+image::imgs/viewa-default-app.png[align=center, width=80%]
+
+Every application has a “rootView”. In this case there's a MyApplicationRootView.java declared as
+the root view but if no view is declared every org.viewaframework.core.DefaultApplication has a
+org.viewaframework.view.DefaultViewContainerFrame which create a default perspective. 
+
+Perspectives are explained more detailed in their own chapter, now just get the idea that a
+perspective is a set of views, in this case you can add views in different areas (Since 1.0.2 all
+perspective implementations have the same available constraints): 
+
+* PerspectiveConstraint.LEFT
+* PerspectiveConstraint.RIGHT
+* PerspectiveConstraint.BOTTOM
+* PerspectiveConstraint.RIGHT
+
+MyApplicationRootView.java is the root view of the application. This is the code built by the
+quickstart archetype:
+
+[source, java]
+----
+include::../example/src/main/java/viewa/example/MyApplicationRootView.java[]
+----
+
+This view extends DefaultViewContainerFrame. And it has some annotated
+controllers for handling the  behavior of some ui components. It this case the
+three declared controllers handle the application menu items. By default
+DefaultViewContainerFrame has three menus: root, edit and help which can be
+internationalized using the Application.properties file.
+
+The Application.properties files can be used for internationalizing root view
+messages, resources (images, colors...etc) and also can be used for setting up
+default values for all views (All view's property files inherits
+Application.properties).
+
+The Application.properties file has the following areas:
+
+Common Properties: Here you can set default values for all views and resources.
+It's also the place where you can set the application's title.  AboutView
+properties: In the quick-start application the AboutView is embedded and here
+is the only place to configure the closing button and the image you want to
+appear in that view.
+ 
+If you want to set the properties in other language, the only thing you have to
+do is to create an Application_es.properties (if you want to translate the
+application to spanish for example) and set the application.locale=es inside
+the viewa.properties file. 
+
+Every view can have its own properties file, in this case our
+MyApplicationRootView,java has its own MyApplicationRootView.properties which
+has to be located in the same package as the view it supports. As you may guess
+the only rule is that the properties file must have the same name (case
+sensitive) as the view it supports and it has to be located at the same
+package.
+
+Since version 1.0.2 you also have the menu descriptor files which have the
+suffix menu.xml. These descriptor files define the structure of the menu-bar
+and the tool-bar of the view they are supporting. The same rules apply, they
+must have the same name (case sensitive) as the view they support and they have
+the suffix menu.xml (MyApplicationRootView.menu.xml in this case).
+
+The structure is pretty basic, the only mandatory rule is that all tags must be
+enclosed by <menuBar></menuBar>. See ActionDescriptor chapter for more
+information about defining menus. 
+
+Finally there're two tests which basically do the same, but the point is that
+they do it in different ways. MyApplicationRootViewTest uses the classical
+TestCase class structure with the setUp() and tearDown() methods for
+initializing and destroying the application, while MyApplicationRootViewTest2
+uses the new annotation approach of Junit 4.7. Both approaches are explain in
+the Testing chapter. 
+
+=== Adding a View
+
+Once we have the main window running we want to create our first view, and we
+want it to appear when the application starts. 
+
+Since version 1.0.2 the better way of doing this is through annotations. All we
+have to do is to create our new view:
+
+[source, java]
+----
+include::../example/src/main/java/viewa/example/NavigationView.java[]
+----
+

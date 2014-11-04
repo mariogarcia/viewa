@@ -1,0 +1,75 @@
+== Intro
+
+""
+Viewa is a framework made for building desktop applications using swing.  It tries to keep separated
+the view-model-controller layers of a given application to make the application development easier.
+""
+
+Why Viewa ?  Well, if you have experienced developing in swing , you know how cumbersome could be to
+create a component, adding some functionality, and make the application scalable or reusable, this
+seems more difficult if you come from web developing. 
+
+There are more frameworks that try to accomplish this problem, but the main reason Viewa has been
+built is to be more like a web framework for the Swing based applications, trying to tear down the
+wall between desktop and web development. 
+
+If you want to know more about Viewa architecture then keep on reading, but if you want start
+coding, then go to the getting started chapter. 
+
+Viewa is based in the following ideas: 
+         
+* *To write as few lines of code as you can*: We have tried to make this happen.  In the getting started
+chapter I try to make this affirmation real.  If you don't think so please let me know.  
+* *The framework's been inspired in the web*: What the heck does it mean? Right now the most important area of
+developing is the web, and there are hundreds of web frameworks that evolve day by day, why don't
+use their experience in ease of use and increase of productivity? Right now it's very difficult for
+a Java web programmer to be productive programming a Swing application development because its
+different perspective. Viewa tries to be “More web programming friendly”.  
+* *Re-usability*: Every UI component used in Viewa doesn't have to know anything about its behavior, 
+the last one is injected to that component in runtime execution. 
+You can build a bunch of widgets you can use though the
+whole application without customization.  
+* *Easy internationalization*: Nowadays many applications
+should be internationalized. Viewa accomplish this requirement in an easy way.
+
+Those ideas are implemented in the following schema. It shows the most important elements of the 
+framework: 
+
+image::imgs/viewa-architecture.png[align=center]
+
+* *viewa.core.Application*:  All the model­view­controller layers are
+joined here, and also application startup and shutdown. 
+
+* *viewa.view.ViewManager*: This interface adds and removes views from
+application and also initializes and finalizes every view added or removed from
+application (Adds the controllers to the view's components , executes the
+view's delegators...). 
+
+* *viewa.controler.ViewControllerDispatcher*: Like a web framework
+this dispatcher makes relationships between views and controllers without
+harcoding this relationship in the UI component (like if we were adding an
+ActionListener to a JButton for example). 
+
+* *viewa.view.ViewContainer*:  Using this interface (well some
+specialization of it) we are going to build up the application gui. A view
+usually has an identifier, that is used for handling the view through all the
+application, and a graphical java.awt.Component which is what the user is going
+to see (it's usually a java.awt.Container). The view has all its functional and
+ui information separated in order to enable reusable graphical and functional
+components. 
+
+* *viewa.view.delegator.Delegator*: This interface is used to add some
+extra functionality to a specific type of view. Delegators are executed twice
+for each view,  the first time when the view is added to the current
+perspective and a second time when is removed. The list of delegators is
+executed forward the first time and on reverse when the view is closed. 
+
+Application and ViewContainer have associated listeners for their life cycle events. Both will be
+described later. 
+
+Of course Viewa is not a solution for all kind of cases, I'm not so vain, in fact I'm aware that it
+is just a baby and there's still a lot of work to do, but the only thing I want you to notice is
+that it tries to make Swing development easier and fun. 
+
+The best way to explain something is by examples. We are going to create a Hello World example to
+expose core concepts of Viewa. 
