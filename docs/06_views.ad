@@ -1,3 +1,141 @@
 == Views
 
+Views are the center of this framework. Although the code you have to write to
+build a ViewContainer is going to be very few lines, the understanding of this
+element is crucial for the rest of the application. 
+
+For building a ViewContainer you usually are going to extend some of the
+current default views that exists in the framework, the most common is
+DefaultViewContainer. 
+
+As we saw in the getting started chapter the only thing you have to do is to
+provide an ID to the view and the visual component the user is going to see. 
+
+[source, java]
+----
+include::../example/src/main/java/viewa/example/NavigationView.java[]
+----
+
+When the view is added to the current application, some things have to be done
+before the user see the view. 
+
+=== View lifecycle
+
+When the view is added to the application via its ViewManager the last one
+injects some objects and executes some methods of the ViewContainer. The
+process is the following: 
+        
+The ViewManager gives the view some objects for its initialization (model,
+controllers, resources...) and executes an initialization method from the view
+(viewInit()). Once this happens the view show up and the user can interact with
+it.  When some of the available actions for closing the view are triggered the
+view executes some cleaning operations before it is hidden. 
+
+The initialization follows this path: 
+
+* The developer wants to add a new view through ViewManager.add(ViewContainer) 
+* ViewManager gets all the model objects and all controllers registered for the current view 
+* ViewManager injects the Application object to that view. 
+* ViewManager registers that view 
+* ViewManager injects the controllers and the view models into the view 
+
+* ViewManager initializes the view calling to the viewInit method from
+ViewContainer. This where the most important things happen like the injection
+of the controllers to the visual components, internationalization of the visual
+components, etc. Here the view executes its delegators, which are and advanced
+way of changing the behavior of the views (This is an advanced feature that
+will probably have its own chapter). Delegators are executed in the order they
+were added to the view. 
+
+* ViewManager arranges the component of the view depending on the component
+nature (if its a Frame, a Dialog o any other Container component). 
+
+And the opposite is: 
+
+* The developer wants to remove the view through ViewManager.remove(ViewContainer) 
+* The ViewManager first calls to the ViewContainer.viewClose() method for cleaning resources from the view. Delegators are executed on reverse order. 
+* The ViewContainer is hidden 
+* The ViewManager unregisters the view 
+
+=== How to add a ViewContainer
+
+Most of the time views are going to be added or removed from a controller. The
+vast majority of the controllers extends AbstractViewController, and every
+method of that class has the ViewContainer where the event has been triggered
+from. Having that in mind, you can use always this sentence: 
+
+[source, java]
+----
+@Override
+public void postHandlingView(ViewContainer view, ActionEvent eventObject)throws ViewException {
+    this.getViewManager().addView(myCustomView);
+}
+----
+
+Remember that adding a view may throw a ViewException if something wrong
+happens during the initialization of the view. 
+
+It's very important if you add a view from a controller that put the sentence
+in the postXXX() or preXXX() methods, why? Because this methods are executed in
+the EventDispatchThread and we want all our UI components are going to be added
+in that thread (I'll try to explain this widely in the controllers chapter) 
+
+Also as you saw in the getting started chapter a view can be added from the
+Application object. That could be helpful if you want to start the application
+with some views in place or if you want to add a login dialog before the
+application begins (since version 1.0.2 is better to use annotations: see
+@View). 
+
+[source, java]
+----
+public void prepareUI() {          
+    try {
+       this.getViewManager()
+           .addView(
+                new NavigationView(), 
+                PerspectiveConstraint.LEFT);
+     } catch (ViewException e) {
+          //...
+     }
+}
+----
+
+This time is also important to do this task in the prepareUI() method for the
+same reasons as I said in controllers. 
+
+=== @View
+
+The @View annotation helps programmer to add ViewContainer classes to the
+application at startup. It has the following attributes:
+
+* `*type*`: This attribute is mandatory. It's the type of the ViewContainer you want
+to add to the application.  
+* `*viewId*`: This attribute can be used to set the
+view's id. Although this attribute is not mandatory remember that all views
+must have an id.  
+* `*id*`: This attribute can be used if the application is using an
+inversion of control container. This id must be the id of the ViewContainer you
+want to retrieve from the IOC context.  
+* `*position*`: This attribute can be used to
+arrange the view in a specific area of the root view, using the given
+perspective's constraints. Since 1.0.2 all perspective implementations have the
+same possible constraints given by the PerspectiveConstraint enumeration type.
+* `*isRoot*`: This attribute must be used to mark which of the added views is the
+root view (if any). By default it is false.
+
+All @View annotations must be nested inside a @Views annotation as its value.
+Watch the example of the @View annotation from the getting started chapter:
+
+[source, java]
+----
+include::../example/src/main/java/viewa/example/MyApplication.java[]
+----
+
+This code adds two views to the application. The first one is the root view
+(isRoot=true). The second one is a view of type NavigationView
+and it is going to be located in the navigation area of the current perspective
+(PerspectiveConstraint.LEFT).
+
+=== Type of views
+
 (TODO)
