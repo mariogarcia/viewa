@@ -105,7 +105,7 @@ same reasons as I said in controllers.
 
 === @View
 
-The @View annotation helps programmer to add ViewContainer classes to the
+The `@View` annotation helps programmer to add `ViewContainer` instances to the
 application at startup. It has the following attributes:
 
 * `*type*`: This attribute is mandatory. It's the type of the ViewContainer you want
@@ -123,7 +123,7 @@ same possible constraints given by the PerspectiveConstraint enumeration type.
 * `*isRoot*`: This attribute must be used to mark which of the added views is the
 root view (if any). By default it is false.
 
-All @View annotations must be nested inside a @Views annotation as its value.
+All `@View` annotations must be nested inside a `@Views` annotation as its value.
 Watch the example of the @View annotation from the getting started chapter:
 
 [source, java]
@@ -132,10 +132,658 @@ include::../example/src/main/java/viewa/example/MyApplication.java[]
 ----
 
 This code adds two views to the application. The first one is the root view
-(isRoot=true). The second one is a view of type NavigationView
+(isRoot=true). The second one is a view of type `NavigationView`
 and it is going to be located in the navigation area of the current perspective
 (PerspectiveConstraint.LEFT).
 
 === Type of views
 
-(TODO)
+All views came from the interface org.viewaframework.view.ViewContainer, and
+there is a default implementation in
+org.viewaframework.view.DefaultViewContainer. Here you have the most common
+implementations: 
+
+* viewa.view.DefaultViewContainer
+* viewa.view.DefaultViewContainerEditor 
+* viewa.view.DefaultViewContainerFrame 
+* viewa.view.AbstractViewContainerDialog (Is an abstract class) 
+
+DefaultViewContainer receives two arguments in its constructor the ID of the
+view and the visual component the user is going to use. We've already used it
+in the getting started application. 
+
+[source, java]
+----
+public DefaultViewContainer()
+public DefaultViewContainer(String id,Component component)
+public DefaultViewContainer(String id,String title,Component component)
+----
+
+DefaultContainerEditor is exactly the same as DefaultViewContainer, it
+implements ViewContainerEditor which is just a flag. It's a semantic meaning
+for  perspectives implementations. 
+
+Let me explain, if you are using a docking framework, you can distinguish
+regular views (navigation views for example) from content views (a master
+table) making the last one as an editor view. In the DefaultPerspective all
+DefaultViewContainerEditor are added to the top­right area as a tab component. 
+
+DefaultContainerFrame are used for building the root view, as you may guess
+this is where all the subsequent view components are going to be added finally.
+Use it if you want to customize the application's Frame. 
+
+AbstractViewContainerDialog is the base for building dialog views. 
+
+[source, java]
+----
+public AbstractViewContainerDialog(String id,Component component)
+public AbstractViewContainerDialog(String id,Component component,Boolean modal)
+----
+
+It has a JDialog where the component the view receives in its constructor, is added. Here is an 
+example. 
+
+[source, java]
+----
+include::../widget/src/main/java/viewa/widget/view/AboutView.java[]
+----
+
+This `AboutView` uses the (String id,Component component,boolean modal) from the
+AbstractViewContainerDialog interface and builds a dialog modal view with the
+id “aboutViewId” and a content panel AboutPanel, this shows a modal dialog
+window. If no other way of closing this window has been provided, a special
+controller is always injected to the dialog and frame views.  This controller
+closes the view calling to the ViewManager.remove(ViewContainer) method when
+the user clicks the X button of the window. 
+
+=== Some useful methods
+
+When using a DefaultViewContainer you can always use the following methods:
+
+[source, java]
+----
+public String getMessage(String key);
+----
+
+This method can be used to get internationalized messages from the view
+resource bundle. Resource management will be explain later, but only say that
+if you have a properties file with the same name as your view in the same
+package as the view, the view will be able to get all the information from this
+file (For example having an AboutView.properties in the same package as
+AboutView class). 
+
+[source, java]
+----
+public Component getComponentByName(String name)
+public List<Component> getComponentsByName(String name)
+----
+
+This two methods are really useful because you can retrieve all components
+within a view by its name (Renember to name all your components if you want to
+retrieve them later). Since version 1.0.1 there's a shorter way of retrieve
+your component through the ComponentFinder object (See accessing UI
+components). 
+
+=== Adding action descriptors 
+
+Action descriptors are a fast way of building view menus and tool bars.
+ActionDescriptor object can be built with string expressions. These expressions
+are built like an Xpath expression. 
+
+==== Programatically
+
+Every ViewContainer has a JToolbar and a JMenubar and both are filled with the
+information of action descriptors. 
+
+They can be added to the ViewContainer through
+setActionDescriptors(List<ActionDescriptor> descriptors) or overriding the
+getActionDescriptors() method as you can see in the following code: 
+
+[source, java]
+----
+include::../widget/src/main/java/viewa/widget/view/DetailView.java[tags=actionDescriptors]
+----
+
+It becomes the following:
+
+image::imgs/viewa-detail-view.png[]
+
+Action Descriptors follow a hierarchical order, for example, you can create a new menu:
+
+[source, java]
+----
+new ViewActionDescriptor("/crudActions[@text='crudActions' and @visible='false']")
+----
+
+This menu is not visible (@visible='false'), but it represents a JMenu object
+with name “crudActions” and default text “crudActions” (@text) , it only acts
+as root for subsequent action descriptor children. Once you have created a
+parent you can for example create a child action: 
+
+[source, java]
+----
+new ViewActionDescriptor("/crudActions/save[@text='save' and @toolBarGroup='1' and @icon='img/save.png']")
+----
+
+The code above builds a JMenuItem and a tool bar item with name “save”
+(.../save) and default text “save” (@text='save'). It belongs to the first
+group of the tool bar (if @toolBarGroup='2' exists a separator will be placed
+between both groups), and the item's icon can be found in 'img/save.png'
+(@icon='...' it must be available within the class path). 
+
+All action descriptors are processed in order they were added to the
+ViewContainer. You can also add separators between action descriptors. 
+
+[source, java]
+----
+new ViewActionDescriptor("/crudActions/separator")
+----
+
+==== Declaratively (XML)
+
+Since 1.0.2 action descriptors can be added, removed or modified declaratively
+through XML files. The  basic structure is:
+
+[source, xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<menuBar>
+    <!-- INSERT MENUS HERE -->
+</menuBar>
+----
+
+Let's create a simple menu called “file” with two items called “open” and
+“new”. Then the menu file should look like this:
+
+[source, xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<menuBar>
+    <file>
+        <open/>
+        <new/>
+    </file>
+</menuBar>
+----
+
+That's enough to link controllers and establish internationalized text through
+the view's properties file. The name of the tag becomes the name of the
+component.
+
+image::imgs/viewa-ad-first.png[]
+
+For prototyping you can add the text attribute to every tag for initializing
+the item text.  You can also add keystrokes to the items of each menu with the
+keystroke attribute.
+
+[source, xml]
+----
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<menuBar>
+    <file text="File">
+        <open text="Open..." keyStroke="CTRL_O"/>
+        <new text="New..." keyStroke="CTRL_N"/>
+    </file>
+</menuBar>
+----
+
+And the result will be:
+
+image::imgs/viewa-ad-second.png[]
+
+Now you can also add icons to that items through the icon attribute:
+
+[source, xml]
+----
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<menuBar>
+    <file text="File">
+        <open text="Open..." keyStroke="CTRL_O" icon="viewa/widget/icon/fam/folder.png"/>
+        <new text="New..." keyStroke="CTRL_N" icon="viewa/widget/icon/fam/folder_add.png"/>
+    </file>
+</menuBar>
+----
+
+The path of the icon is inside the class-path. This time we're using the icons
+contained within the viewaframework-widget module. Now the application is
+getting better:
+
+image::imgs/viewa-ad-third.png[]
+
+We still want to add a separator between the open and the new items, then we
+just need to add a separator tag between them.
+
+[source, xml]
+----
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<menuBar>
+    <file text="File">
+        <open text="Open..." keyStroke="CTRL_O" ...
+        <separator/>
+        <new text="New..." keyStroke="CTRL_N" ...
+    </file>
+</menuBar>
+----
+
+And the separator becomes visible:
+
+image::imgs/viewa-ad-fourth.png[]
+
+So far so good. Now we want to create a submenu. It as simple as nesting tags.
+We are going to add an export submenu which has two items pdf and excel.
+
+[source, xml]
+----
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<menuBar>
+    <file text="File">
+        <open text="Open..." keyStroke="CTRL_O" icon="viewa/widget/icon/fam/folder.png"/>
+        <separator/>
+        <new text="New..." keyStroke="CTRL_N" icon="viewa/widget/icon/fam/folder_add.png"/>
+        <!-- **** NEW SUBMENU **** -->
+        <export text="Export">
+            <pdf text="Export to pdf"/>
+            <excel text="Export to excel"/>
+        </export>
+    </file>
+</menuBar>
+----
+
+And we'll get the following screen-shot:
+
+image::imgs/viewa-ad-fifth.png[]
+
+Sub-menus can have text and icon attributes but the can't have a keystroke
+attribute. In general menus and sub-menus have in common the following
+attributes:
+
+* text: The default text. It can be internationalized by the view's property file
+* icon: The icon class-path associated to that menu or menu-item
+* enabled:  true if the menu or menu-item is going to be enabled, false if you want to disable it.
+* visible: true if you want the menu or menu-item to be visible.
+  
+Only menu items have:
+
+* keyStroke: It builds a key shortcut to execute a given menu-item.
+* toolBarMenu: It's the number of the tool-bar menu the current menu-item belongs.
+* enableToolButtonText: The tool-bar buttons have the same text and icon as
+their counterparts in the menu-bar.  Most of the time you may want the icon but
+not the text. 
+
+In order to create a tool-bar we use the toolBarMenu attribute. Imagine you
+want the open and new menu-items to be part of the first tool-bar and the pdf
+(we have added an icon to it) to be part of the second tool-bar, then you will
+write:
+
+[source, xml]
+----
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<menuBar>
+    <file text="File" icon="org/viewaframework/widget/icon/fan/img/folder/folder_add.png">
+        <open toolBarGroup="1" text="Open..." keyStroke="CTRL_O" icon="org/viewaframework/widget/icon/fan/img/folder/folder.png"/>
+        <separator />
+        <new toolBarGroup="1" text="New..." keyStroke="CTRL_N" icon="org/viewaframework/widget/icon/fan/img/folder/folder_add.png"/>
+        <!-- NEW SUBMENU -->
+        <export text="Export">
+            <pdf toolBarGroup="2" text="Export to pdf" icon="org/viewaframework/widget/icon/fan/img/page/page_white_acrobat.png"/>
+            <excel text="Export to excel" />
+        </export>
+    </file>
+</menuBar>
+----
+
+And then get:
+
+image::imgs/viewa-ad-sixth.png[]
+
+The enableToolButtonText attribute hides the button text from the tool-bar
+elements. In the previous example there weren't any text because we didn't
+write the items' text in the view's properties file. If you  do it then you'll
+see something like this:
+
+image::imgs/viewa-ad-seventh.png[]
+
+Maybe you like it that way, but if you want to hide the text from the tool-bar
+items just add enableToolButtonText=”false” to that items.
+
+By default the tool-bar is floatable, if you don't want the tool-bar to be
+floatable you can set it up in the current view's property file
+`toolBar.floatable=false`
+
+=== System Tray
+
+Nowadays many commercial applications use the system tray to add more
+functionality to their behavior. For example you can hide or restore the
+application's window or refresh some data or even receive some notifications.
+
+image::imgs/viewa-system-tray.png[align=center]
+
+From version 1.0.5 all Viewa applications can create a tray icon in the system
+tray through xml descriptive files as we do with ActionDescriptor items.
+
+First thing to do is to create a new view class. This class has to extend the
+abstract class org.viewaframework.view.AbstractViewContainerTray.
+
+[source, java]
+----
+include::../core/src/test/java/viewa/common/MyTrayView.java[]
+----
+
+Once we have created the view we have to build the descriptor file. As we did
+with action descriptors we create in the same package of the view an xml file
+with the same name as the View with the menu.xml suffix. This way we will have
+a  MyTrayView.menu.xml:
+
+[source, xml]
+----
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- *********************************************************************************** -->
+<!-- ****************************** TRAY ICON CONFIGURATION **************************** -->
+<!-- *********************************************************************************** -->
+<!-- **** In this file you can define the system tray icon for this application.       * -->
+<!-- *********************************************************************************** -->
+<trayIcon>
+    <leftMenu>
+        <sendMessage text="Send Message..."/>
+        <refresh text="Refresh Message List"/>
+        <delete text="delete" />
+        <edit  text="edit"/>
+        <separator/>
+        <configuration/>
+    </leftMenu>
+    <rightMenu>
+        <hiderestore text="Hide / Restore" icon="org/viewaframework/common/img/restore.png"/>
+        <remove/>
+    </rightMenu>
+</trayIcon>
+----
+
+As you can see the internal structure differs from the previous xml files we
+used to describe action descriptors. The file has a root tag called <trayIcon>
+and this tag has two nested tags called `<leftMenu>` and `<rightMenu>`. These two
+tags represents two contextual popup menus, depending whether the user is click
+over the tray icon with the right or the left button.
+
+Both `<leftMenu>` and `<rightMenu>` are optionals. You can omit one of them if you
+want to show just one contextual menu.
+
+Within `<leftMenu>` and `<rightMenu>` all menu elements must be established. Same
+rules as action descriptors apply but, in this case only text and icon
+attributes are allowed, rest of attributes will be ignored.
+
+You can't also nest elements.
+
+Finally you have to config the application in order to show our tray view.
+
+[source, java]
+----
+include::../core/src/test/java/viewa/common/TestApplication.java[]
+----
+
+As we do whenever we want to show a view at startup we add our tray view with a
+@View annotation telling the application this is going to be the tray icon view
+(isTray=true).
+
+NOTE: There's only one tray icon view per application.
+
+=== Perspectives
+
+Perspectives are a way of grouping views in some way. 
+
+You can implement your own perspective, or make a custom integration with an
+existing docking framework (see viewaframework-docking module). 
+
+To add a view to a specific area you must use the following method from
+org.viewaframework.view.ViewManager 
+
+[source, java]
+----
+public void addView(ViewContainer view,PerspectiveConstraint constraint) throws ViewException
+----
+
+Where the second argument is the object constraint, in the default perspective
+are the constraints above, in other cases just check the perspective
+documentation. 
+
+The default perspective is
+org.viewaframework.view.perspective.DefaultPerspective. All perspective
+implementations have the same type of constraints areas contained in the enum
+PerspectiveContraint: 
+
+[source, java]
+----
+include::../api/src/main/java/viewa/view/perspective/PerspectiveConstraint.java[]
+----
+
+The reason of this change is to create a unique way of arranging views through
+different types of perspectives. This way Viewa will have a better user
+experience. In the DefaultPerspective this constraints are located this way:
+
+image::imgs/viewa-perspective-constraints.png[align=center, width=80%]
+
+These views are added as tab components to those areas. Every view has three tab buttons: 
+
+* Maximize button: Maximizes the selected view 
+* Restore button: Restores all areas 
+* Close button: Closes the selected view 
+
+image::imgs/viewa-perspective-constraints.png[align=center, width=80%]
+
+At the beginning the PerspectiveConstraint.BOTTOM area is not visible if no
+view has been added to that area. This area won't appear until a view is added
+to it. 
+
+DefaultPerspective is a basic implementation of what you can do with the
+Perspective interface. You can make an integration with your favorite docking
+lib.  If you want to customize the view's icon you have to setup the property
+iconImage in the view's property file setting the URL path.
+
+=== Resources and internationalization
+
+Nowadays most applications have to deal with handling different user languages.
+Viewa supports internationalization using : 
+
+Application.properties Specific view's property file 
+
+The locale of the application must be set up in the viewa.properties file 
+
+[source, properties]
+----
+include::../core/src/test/resources/viewa.properties[]
+----
+
+As you can see inside viewa.properties we are going to search all property
+files with the “es” suffix (Application_es.properties ... and so on). 
+
+Application.properties should be used for the application's root view and
+common properties shared between views. If you want to establish specific
+properties or override Application.properties for a given view, you should
+create a properties file with the same name (is case sensitive, so if the view
+class is AboutView, the properties file should be AboutView.properties) in the
+same package. 
+
+=== View Messages
+
+Once you have written internationalized messages and resources in the properties view, this 
+properties can be retrieved from the view using: 
+
+[source, java]
+----
+public String getMessage(String key)
+public ResourceBundle getMessageBundle()
+----
+
+The first method retrieves the property with the given key as a String. The
+second one returns the whole ResourceBundle.
+
+These methods are very useful for example when executing a controller and you
+want to show a specific message in a specific component: 
+
+[source, java]
+----
+protected void postHandlingViewAccept(ViewContainer view,ActionEvent eventObject) throws Exception {
+    Jlabel.class.cast(view.getComponentByName(“status”)).
+        setText(view.getMessage("country.save.ok"));
+}
+----
+
+=== Resource Converters
+
+Inserting resources not only means that we write messages but also colors,
+images... etc.  Viewa address that with the use of delegators, in fact this is
+made by the DefaultViewResourceDelegator. This delegator reads the view
+associated property file and converts the property value to an object through
+the right ViewResourceConverter. 
+
+[source, java]
+----
+include::../api/src/main/java/viewa/view/delegator/ViewResourceConverter.java[]
+----
+
+Converters receive a property value from a specific view's properties file (or
+from Application.properties) and checks what type of value requires the
+object's method. Then it tries to convert the property's value into the
+method's argument type.
+
+* getDestinationClass(): It must return the type of the method's argument the
+property wants to change. If we want to change a JMenuItem background color we
+need a converter whose getDestinationClass() will return a java.awt.Color.
+* convert(): The first argument is the String value written in the properties
+file.  The second argument is not used anymore and will be deleted from future
+releases. This method must return the transformed object.
+
+There are some built in converters: 
+      
+* ViewResourceBooleanConverter 
+* ViewResourceColorConverter 
+* ViewResourceDimensionConverter 
+* ViewResourceIconConverter 
+* ViewResourceImageConverter 
+* ViewResourcePrimitiveBooleanConverter 
+* ViewResourceStringConverter 
+
+Since version 1.0.1 you can add new converters to your application easily
+adding a new converter declaration inside viewa.properties.  But notice that
+declaring new converters overrides the default converters for that types.
+
+[source, properties]
+----
+application.name=Getting Started
+application.version=1.0-SNAPSHOT
+application.locale=es
+application.splash=false
+
+java.awt.Color=org.mycompany.viewa.converters.MyColorConverter
+----
+
+In the example we are mapping all property values pointing at a java.awt.Color
+field to MyColorConverter class which has to inherit from ViewResourceConverter
+interface. The MyColorConverter could be like the following snippet: 
+
+[source, java]
+----
+import java.awt.Color;
+import viewa.view.delegator.ViewResourceConverter;
+
+public class MyColorConverter implements ViewResourceConverter {
+       public Object convert(Object arg0, Class<? extends Object> arg1) {
+               if (arg1.equals(this.getDestinationClass())){
+                       if (arg0!= null && arg0.toString().equalsIgnoreCase("red")){
+                              return Color.RED;
+                       }
+               }
+               return Color.BLACK;
+       }
+       public Class<? extends Object> getDestinationClass() {
+               return Color.class;
+       }
+}
+----
+
+The getDestinationClass() tells what kind of object this converter can handle.
+The most important part is the convert method. The first parameter is the value
+that comes from the property file, in this case if the value is “red” then the
+converter will return a Color.RED object otherwise it will return a
+Color.BLACK. 
+
+==== ViewResourceBooleanConverter
+
+This class can convert any argument that can be evaluated by Boolean.valueOf(..) method and create a java.lang.Boolean object.
+
+==== ViewResourceColorConverter
+
+This class can parse HTML color expressions like #000000 and create a java.awt.Color object from those expressions.
+
+==== ViewResourceDimensionConverter
+
+This class converts an input string of type  200,150 representing width and height into a java.awt.Dimension instance. 
+
+For example you have a given property like viewDialog.size= 300,250  then the expression will become something like viewDialog.setSize(new java.awt.Dimension(300,250));
+
+==== ViewResourceIconConverter
+
+This converter can convert an icon path in a java.awt.Image object. It's very flexible you can use a complete url string to point to the specific resource, for example, valid locations could be:
+
+* file://home/myuser/images/myImage.png
+* classpath://org/myproject/images/myImage.png
+* http://www.anypictureweb.com/images/myImage
+
+==== ViewResourceImageConverter
+
+It behaves exactly the same as ViewResourceIconConverter
+
+==== ViewResourcePrimitiveBooleanConverter
+
+This class can convert any argument that can be evaluated by Boolean.valueOf(..) method and create a primitive boolean value.
+
+==== ViewResourceStringConverter
+
+It's the default converter. Converts the passed argument as a java.lang.String
+
+== Delegators
+
+Well if you have read carefully until this chapter you may have read something
+about delegators more than once. 
+
+Delegators are one of the most powerful concepts in Viewa, because they can
+change the behavior of a given view in many ways.  For example they are used
+for injecting the resources from the properties files, or for injecting
+controllers to the visual components...etc. This delegators are built in such a
+way that every behavior they give to the view should be cleaned from it once
+the view has been closed. 
+
+All delegators are based in the following interface: 
+
+[source, java]
+----
+include::../api/src/main/java/viewa/view/delegator/Delegator.java[]
+----
+
+All delegators that belong to a given view are executed when the view is
+initialized in the order they were added to the view, executing the inject(...)
+method . And when the view closes then they are executed in the opposite
+direction executing the method clean(...). 
+
+You can add as many delegators as you want to a view, but it's very important
+the order you are going to use. 
+
+It's very important knowing what delegators are used by the default views: 
+
+* `viewa.view.AbstractViewContainer`
+* `viewa.view.delegator.ActionDescriptorDelegator`
+* `viewa.view.delegator.NamedComponentsDelegator`
+* `viewa.view.delegator.ViewContainerControllerDelegator`
+* `viewa.view.delegator.DefaultViewResourceDelegator`
+* `viewa.view.DefaultViewContainer` (it uses the same delegators as the AbstractViewContainer)
+* `viewa.view.AbstractViewContainerDialog`
+* `viewa.view.delegator.ActionDescriptorDelegator`
+* `viewa.view.delegator.NamedComponentsDelegator` 
+* `viewa.view.delegator.DefaultViewResourceDelegator`
+* `viewa.view.delegator.DialogViewClosingWindowDelegator`
+* `viewa.view.delegator.ViewContainerControllerDelegator`
+
+Now Viewa doesn't relay in any IO (Inversion of control) container by default,
+but many of the things can be done declaratively using any of the IO containers
+you can find out there. 
+
+

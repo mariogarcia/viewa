@@ -28,20 +28,20 @@ import viewa.widget.controller.DetailViewController;
 import viewa.widget.view.delegator.DetailViewDelegator;
 
 /**
- * This kind of view is tightly couple with the MasterView view. If you match a 
+ * This kind of view is tightly couple with the MasterView view. If you match a
  * MasterView with a given DetailView, you can see row records from the MasterView
  * in the detailView with little effort.
- * 
+ *
  * @author Mario Garcia
  *
  * @param <D>
  */
 public abstract class DetailView<D,M> extends AbstractViewContainerDialog{
-	
+
 	public static final String ACTION_SAVE = "saveAction";
 	public static final String ACTION_CANCEL = "cancelAction";
 	public static final String ACTION_HELP = "helpAction";
-	
+
 	/**
 	 * @author Mario Garcia
 	 *
@@ -50,7 +50,7 @@ public abstract class DetailView<D,M> extends AbstractViewContainerDialog{
 		private static final long serialVersionUID = 1L;
 		private DetailView<D,M> view;
 		/**
-		 * 
+		 *
 		 */
 		TranslucentGlassPane(){
 			this.view = DetailView.this;
@@ -65,11 +65,11 @@ public abstract class DetailView<D,M> extends AbstractViewContainerDialog{
 			setFocusTraversalKeysEnabled(false);
 			setOpaque(false);
 		}
-		
+
 		public boolean contains(int x,int y){
 			return !view.getJToolBar().getBounds().contains(x,y);
 		}
-		
+
 		/* (non-Javadoc)
 		 * @see javax.swing.JComponent#paintComponent(java.awt.Graphics)
 		 */
@@ -81,12 +81,12 @@ public abstract class DetailView<D,M> extends AbstractViewContainerDialog{
 			Color alphaWhite = new Color(1.0f,1.0f,1.0f,0.65f);
 			g.setColor(alphaWhite);
 			g.fillRect(clip.x, clip.y, clip.width, clip.height);
-		}		
+		}
 	}
 	public static final String MODEL_MASTER_OBJECT ="masterObject";
 	public static final String MODEL_RELATIONSHIPS = "relationships";
 	public static final String MODEL_WORKING_OBJECT ="workingObject";
-	
+
 	private List<Delegator> delegators;
 	private List<String> nonEditableDisabledActions;
 
@@ -114,14 +114,16 @@ public abstract class DetailView<D,M> extends AbstractViewContainerDialog{
 	 * @see viewa.view.AbstractViewContainer#getActionDescriptors()
 	 */
 	@Override
+    // tag::actionDescriptors[]
 	public List<ViewActionDescriptor> getActionDescriptors() {
 		List<ViewActionDescriptor> descriptors = new ArrayList<ViewActionDescriptor>();
 		descriptors.add(new ViewActionDescriptor("/detailViewActions[@name='detailViewActions' and @visible='false']"));
-		descriptors.add(new ViewActionDescriptor("/detailViewActions/" + ACTION_SAVE + "[@toolBarGroup='1' and @name='saveAction' and @icon='org/viewaframework/widget/icon/fan/img/page/page_save.png']"));		
+		descriptors.add(new ViewActionDescriptor("/detailViewActions/" + ACTION_SAVE + "[@toolBarGroup='1' and @name='saveAction' and @icon='org/viewaframework/widget/icon/fan/img/page/page_save.png']"));
 		descriptors.add(new ViewActionDescriptor("/detailViewActions/" + ACTION_HELP + "[@toolBarGroup='1' and @text='helpAction' and @icon='org/viewaframework/widget/icon/fan/img/misc/help.png']"));
 		descriptors.add(new ViewActionDescriptor("/detailViewActions/" + ACTION_CANCEL + "[@toolBarGroup='1' and @name='cancelAction' and @icon='org/viewaframework/widget/icon/fan/img/door/door.png']"));
 		return descriptors;
 	}
+    // end::actionDescriptors[]
 
 	/* (non-Javadoc)
 	 * @see viewa.view.AbstractViewContainer#getDelegators()
@@ -129,10 +131,10 @@ public abstract class DetailView<D,M> extends AbstractViewContainerDialog{
 	@Override
 	public List<Delegator> getDelegators() {
 		if (this.delegators == null){
-			this.delegators = Arrays.asList(		
+			this.delegators = Arrays.asList(
 				 /* Remember: The ActionDescriptorDelegator must be always the first delegator */
 					new ActionDescriptorDelegator(),
-					new NamedComponentsDelegator(),		
+					new NamedComponentsDelegator(),
 					new DetailViewDelegator(),
 					new DefaultViewResourceDelegator(),
 					new DialogViewClosingWindowDelegator(VIEW_DIALOG_NAME),
@@ -140,7 +142,7 @@ public abstract class DetailView<D,M> extends AbstractViewContainerDialog{
 		}
 		return this.delegators;
 	}
-	
+
 	public abstract Class<D> getDetailType() ;
 
 
@@ -163,9 +165,9 @@ public abstract class DetailView<D,M> extends AbstractViewContainerDialog{
 	public void setDelegators(List<Delegator> delegators) {
 		this.delegators = delegators;
 	}
-	
-	
+
+
 	public void setNonEditableDisabledActions(List<String> nonEditableActiveActions) {
 		this.nonEditableDisabledActions = nonEditableActiveActions;
-	}	
+	}
 }
