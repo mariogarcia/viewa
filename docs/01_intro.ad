@@ -1,13 +1,13 @@
 == Intro
 
+Why Viewa ?  Well, if you have experienced developing in swing , you know how cumbersome could be to
+create a component, adding some functionality, and make the application scalable or reusable, this
+seems more difficult if you come from web developing.
+
 ""
 Viewa is a framework made for building desktop applications using swing.  It tries to keep separated
 the view-model-controller layers of a given application to make the application development easier.
 ""
-
-Why Viewa ?  Well, if you have experienced developing in swing , you know how cumbersome could be to
-create a component, adding some functionality, and make the application scalable or reusable, this
-seems more difficult if you come from web developing. 
 
 There are more frameworks that try to accomplish this problem, but the main reason Viewa has been
 built is to be more like a web framework for the Swing based applications, trying to tear down the

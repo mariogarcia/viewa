@@ -5,5 +5,13 @@ Java Desktop Application
 
 include::01_intro.ad[]
 
-include::02_getting_started.ad[]
+include::02_installation.ad[]
+
+include::03_getting_started.ad[]
+
+include::04_application.ad[]
+
+include::05_launchers.ad[]
+
+include::06_views.ad[]
 

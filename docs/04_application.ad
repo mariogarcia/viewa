@@ -1,0 +1,64 @@
+== Application
+
+The Application interface (org.viewaframework.core.Application) is where all
+the pieces are integrated. The org.viewaframework.core.Application interface is
+the main entry point to your application. It configures some init
+configuration, the locale and it has access to the ViewManager for adding and
+removing views. 
+
+=== Lifecycle
+
+Every Viewa application starts executing the following methods; 
+
+* prepare() : this method is called before the UI appears. Should be used if
+some background actions want to the done. It also initializes the
+ApplicationContext if it wasn't initialized yet.  
+* prepareUI(): This method
+should be used for initializing UI components. Executed in the Event Dispatch
+Thread.  
+* InitUI(): This method is used by the DefaultApplication for making
+visible the main frame. Executed in the Event Dispatch Thread. 
+
+This methods are executed by a specific implementation of the
+org.viewaframework.core.Launcher which executes them in the right thread.
+Default implementation is DefaultApplicationLauncher.  The application is also
+responsible for handling the locale of the application through its getLocale()
+and setLocale(..) methods.  Usually set in the viewa.properties file. 
+
+The user usually access the application instance though a given view. All views
+have access to the application though the method getApplication(). 
+
+=== ApplicationContext
+
+Since Viewa 1.0.2 the org.viewaframework.core.ApplicationContext interface
+represents an application' scope where the programmer can store and retrieve
+objects. The ApplicationContext interface has the following methods:
+
+[source, java]
+----
+public void setAttribute(String name, Object value);
+public void removeAttribute(String name);
+public Object getAttribute(String name);
+----
+
+As you may guess the setAttribute(...) method stores a given value with a given
+name, removeAttribute(...) sets to null a value which had a given name, and
+getAttribute(...) retrieves an object stored with a given name (or null if
+nothing is found).
+
+=== Visibility
+
+Since version 1.0.5 the Application interface has the following methods:
+
+[source, java]
+----
+public boolean isVisible();
+public void setVisible(boolean visible);
+public boolean hideOrRestore();
+----
+
+The isVisible() method returns true if the application is visible, false
+otherwise. The setVisible(boolean visible) makes the application visible or not
+depending on the value passed as parameter. The hideOrRestore() method is a
+shortcut of setVisible(...) without asking whether the application is visible
+or not.

@@ -1,0 +1,25 @@
+== Launchers
+
+All applications are executed using an implementation of
+org.viewaframework.core.ApplicationLauncher. Most of the time you will use the
+class  org.viewaframework.core.DefaultApplicationLauncher or any class
+extending DefaultApplicationLauncher. The typical launching code:
+
+[source, java]
+----
+include::../example/src/main/java/viewa/example/MyApplication.java[]
+----
+
+Why would we want to extend DefaultApplicationLauncher? Well we could want to
+establish the startup look and feel. This could be done this way:
+
+[source, java]
+----
+include::../example/src/main/java/viewa/example/MyApplicationLauncher.java[]
+----
+
+In this example we want to use the JGoodies (http://www.jgoodies.com/) library
+to set our look and feel.
+
+This couldn't be done until version 1.0.5 because DefaultApplicationLauncher
+was declared final.

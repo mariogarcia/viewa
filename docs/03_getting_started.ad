@@ -1,8 +1,4 @@
-== Installation 
-
 == Getting Started
-
-(TODO LAZYBONES)
 
 Every Viewa project has a *viewa.properties* in the class path. This file is used for startup options,
 like the locale, and the properties that are going to be showed in the splash-screen (if any). It
@@ -20,7 +16,22 @@ The quick-start archetype also built a main entry point called MyApplication.jav
 
 [source, java]
 ----
-include::../example/src/main/java/viewa/example/MyApplication.java[]
+package viewa.example;
+
+import viewa.annotation.View;
+import viewa.annotation.Views;
+import viewa.view.PerspectiveConstraint;
+import viewa.core.DefaultApplication;
+import viewa.core.DefaultApplicationLauncher;
+
+@Views({
+    @View(type=MyApplicationRootView.class,isRoot=true)
+})
+public class MyApplication extends DefaultApplication {
+    public static void main(String[] args) throws Exception {
+        new DefaultApplicationLauncher().execute(MyApplication.class);
+    }
+}
 ----
 
 The *viewa.core.DefaultApplication* class is a default implementation of
@@ -117,6 +128,129 @@ have to do is to create our new view:
 
 [source, java]
 ----
+package viewa.example;
+
+import viewa.view.DefaultViewContainer;
+
+public class NavigationView extends DefaultViewContainer {
+    public static final String ID = "NavigationViewID";
+
+    public NavigationView() {
+        super(ID,new NavigationPanel());
+    }
+}
+----
+
+A view is a very simple class. In our constructor we have called to the
+DefaultViewContainer constructor which needs the view's id and the graphic
+component showed by that view (in this case the NavigationPanel). Notice that
+the view's id is declared as a public constant, that's because the id is needed
+to show or remove the view from the application. 
+
+The NavigationPanel looks like this:
+
+[source, java]
+----
+include::../example/src/main/java/viewa/example/NavigationPanel.java[]
+----
+
+In order to create this panel you need to download the swingx component's
+library at http://www.swinglabs.org  (if you didn't use maven).
+
+It shows a simple task container with a single action “Show text panel”. It's
+very important to set the names of the components because is the only link
+between the components and the rest of the application (properties files,
+controllers and so on). The rest of the component's properties is just for
+initializing the component but you can change it later through the view's
+property file.
+
+Only rest to add the view to the application using the @View annotation.
+
+[source, java]
+----
+include::../example/src/main/java/viewa/example/MyApplication.java[]
+----
+
+The new thing here is the position attribute which uses the
+PerspectiveContraint enumeration constraints. In this case we want the view to
+be placed in the navigation area. Now run again the application:
+
+image::imgs/viewa-navigation-view.png[align=center, width=80%]
+
+Now we have the navigation view ready to go. But... what is an application
+which doesn't do anything? Now it last to add some actions to the “Show text
+panel” link. 
+
+=== Creating actions
+
+All controllers in Viewa inherit from AbstractViewController.  The main
+important methods are: 
+
+* *getSupportedClass*: Mandatory. This method is a little bit boring, it should
+return the listener type'class.  
+* *preHandlingView*: This method handles view
+related initialization. Those actions that have to do with the UI before
+executing a background action. It's not mandatory.  
+* *handleView*: This method is
+made for implementing long term actions. Those actions that can freeze the
+UI.It's not mandatory.  
+* *postHandlingView*: This method is made for leaving the
+UI in its final state once the long term action has been executed.It's not
+mandatory. 
+
+Now you can use all of them or just a few. Anyway getSupportedClass method is
+mandatory, and it should return the correct listener's class. 
+
+When an AbstractViewController is called by the event of a given component it
+executes the methods in the following order. 
+
+* preHandlingView 
+* handleView 
+* postHandlingView 
+
+To show how to add a behavior to the “Show text panel” link we have to build a
+new controller.
+
+[source, java]
+----
+include::../example/src/main/java/viewa/example/TextPanelLinkController.java[]
+----
+
+As it may seemed it shows a text panel in the edition area. The right way for
+adding new views from controllers is inside the postHandlingView() method using
+the ViewManager instance.  
+
+In Viewa is forbidden to add two views instances with the same view id. So if
+you try to add twice the text panel you will get a ViewException. You can avoid
+that asking if there's a view with some id before trying to add it:
+
+[source, java]
+----
+ViewManager manager = this.getViewManager();
+        
+if (locate(TextPanelView.ID) == null){
+    manager.addView(new TextPanelView(),PerspectiveConstraint.RIGHT);
+}
+----
+
+Here you have the TextPanelView code:
+
+[source, java]
+----
+include::../example/src/main/java/viewa/example/TextPanelView.java[]
+----
+
+Finally we have to tell the view what controller it has to use when the “Show
+text panel” link is being pressed.
+
+[source, java]
+----
 include::../example/src/main/java/viewa/example/NavigationView.java[]
 ----
 
+We have used the @Controllers and @Controller annotations. See why you have to
+be worried about the name of the component (the “Show text panel” link has the
+name “textPanelLinkName”), it's the argument of the pattern attribute, that way
+the application knows where the controller has to be added. You can use regular
+expressions in the pattern attribute to match more than one component (for
+example “textPanelLinkName|otherComponentName”).
