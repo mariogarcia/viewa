@@ -706,21 +706,21 @@ that comes from the property file, in this case if the value is “red” then t
 converter will return a Color.RED object otherwise it will return a
 Color.BLACK. 
 
-==== ViewResourceBooleanConverter
+* `*ViewResourceBooleanConverter*`
 
 This class can convert any argument that can be evaluated by Boolean.valueOf(..) method and create a java.lang.Boolean object.
 
-==== ViewResourceColorConverter
+* `*ViewResourceColorConverter*`
 
 This class can parse HTML color expressions like #000000 and create a java.awt.Color object from those expressions.
 
-==== ViewResourceDimensionConverter
+* `*ViewResourceDimensionConverter*`
 
 This class converts an input string of type  200,150 representing width and height into a java.awt.Dimension instance. 
 
 For example you have a given property like viewDialog.size= 300,250  then the expression will become something like viewDialog.setSize(new java.awt.Dimension(300,250));
 
-==== ViewResourceIconConverter
+* `*ViewResourceIconConverter*`
 
 This converter can convert an icon path in a java.awt.Image object. It's very flexible you can use a complete url string to point to the specific resource, for example, valid locations could be:
 
@@ -728,15 +728,15 @@ This converter can convert an icon path in a java.awt.Image object. It's very fl
 * classpath://org/myproject/images/myImage.png
 * http://www.anypictureweb.com/images/myImage
 
-==== ViewResourceImageConverter
+* `*ViewResourceImageConverter*`
 
 It behaves exactly the same as ViewResourceIconConverter
 
-==== ViewResourcePrimitiveBooleanConverter
+* `*ViewResourcePrimitiveBooleanConverter*`
 
 This class can convert any argument that can be evaluated by Boolean.valueOf(..) method and create a primitive boolean value.
 
-==== ViewResourceStringConverter
+* `*ViewResourceStringConverter*`
 
 It's the default converter. Converts the passed argument as a java.lang.String
 

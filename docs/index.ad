@@ -15,3 +15,5 @@ include::05_launchers.ad[]
 
 include::06_views.ad[]
 
+include::07_controllers.ad[]
+

@@ -1,0 +1,12 @@
+== Controllers
+
+What is an application if you can't do anything with it? That's when it comes
+the controllers. The benefit Viewa brings to developers is that they will never
+have to learn all the methods of the different listeners Swing can have, they
+are only going to face a single object the AbtractViewController. 
+
+=== AbstractViewController and AbstractViewControllerWorker
+
+==== AbstractViewController
+
+
