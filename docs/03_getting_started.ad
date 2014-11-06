@@ -6,7 +6,7 @@ has the following properties:
 
 [source, properties]
 ----
-include::../example/src/main/resources/viewa.properties[]
+include::../examples/src/main/resources/viewa.properties[]
 ----
 
 In this case the application is called “yourartifact” in version 1.0-SNAPSHOT , it's not going to
@@ -67,7 +67,7 @@ quickstart archetype:
 
 [source, java]
 ----
-include::../example/src/main/java/viewa/example/MyApplicationRootView.java[]
+include::../examples/src/main/java/viewa/example/MyApplicationRootView.java[]
 ----
 
 This view extends DefaultViewContainerFrame. And it has some annotated
@@ -151,7 +151,7 @@ The NavigationPanel looks like this:
 
 [source, java]
 ----
-include::../example/src/main/java/viewa/example/NavigationPanel.java[]
+include::../examples/src/main/java/viewa/example/NavigationPanel.java[]
 ----
 
 In order to create this panel you need to download the swingx component's
@@ -168,7 +168,7 @@ Only rest to add the view to the application using the @View annotation.
 
 [source, java]
 ----
-include::../example/src/main/java/viewa/example/MyApplication.java[]
+include::../examples/src/main/java/viewa/example/MyApplication.java[]
 ----
 
 The new thing here is the position attribute which uses the
@@ -213,7 +213,7 @@ new controller.
 
 [source, java]
 ----
-include::../example/src/main/java/viewa/example/TextPanelLinkController.java[]
+include::../examples/src/main/java/viewa/example/TextPanelLinkController.java[]
 ----
 
 As it may seemed it shows a text panel in the edition area. The right way for
@@ -237,7 +237,7 @@ Here you have the TextPanelView code:
 
 [source, java]
 ----
-include::../example/src/main/java/viewa/example/TextPanelView.java[]
+include::../examples/src/main/java/viewa/example/TextPanelView.java[]
 ----
 
 Finally we have to tell the view what controller it has to use when the “Show
@@ -245,7 +245,7 @@ text panel” link is being pressed.
 
 [source, java]
 ----
-include::../example/src/main/java/viewa/example/NavigationView.java[]
+include::../examples/src/main/java/viewa/example/NavigationView.java[]
 ----
 
 We have used the @Controllers and @Controller annotations. See why you have to

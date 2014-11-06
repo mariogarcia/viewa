@@ -2,9 +2,9 @@ package viewa.example;
 
 import viewa.annotation.View;
 import viewa.annotation.Views;
-import viewa.view.PerspectiveConstraint;
 import viewa.core.DefaultApplication;
 import viewa.core.DefaultApplicationLauncher;
+import viewa.view.perspective.PerspectiveConstraint;
 
 @Views({
     @View(type=MyApplicationRootView.class,isRoot=true),

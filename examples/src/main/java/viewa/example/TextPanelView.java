@@ -1,4 +1,4 @@
-package example.viewa;
+package viewa.example;
 
 import javax.swing.JTextPane;
 import viewa.view.DefaultViewContainer;

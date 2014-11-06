@@ -1,7 +1,7 @@
 package viewa.example;
 
-import viewa.annotation.Controller
-import viewa.annotation.Controllers
+import viewa.annotation.Controller;
+import viewa.annotation.Controllers;
 import viewa.view.DefaultViewContainer;
 
 @Controllers({

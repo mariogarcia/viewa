@@ -13,7 +13,7 @@ provide an ID to the view and the visual component the user is going to see.
 
 [source, java]
 ----
-include::../example/src/main/java/viewa/example/NavigationView.java[]
+include::../examples/src/main/java/viewa/example/NavigationView.java[]
 ----
 
 When the view is added to the current application, some things have to be done
@@ -128,7 +128,7 @@ Watch the example of the @View annotation from the getting started chapter:
 
 [source, java]
 ----
-include::../example/src/main/java/viewa/example/MyApplication.java[]
+include::../examples/src/main/java/viewa/example/MyApplication.java[]
 ----
 
 This code adds two views to the application. The first one is the root view
