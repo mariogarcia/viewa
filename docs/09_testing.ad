@@ -1,0 +1,125 @@
+== Testing
+
+Every application should be tested very often. Viewa has a specific testing
+module (viewaframework-test) based on Junit (http://www.junit.org/ ). This
+module has classes and methods that will make testing Viewa applications
+easier.
+
+A JUnit test for Viewa should have the current structure: 
+
+[source, java]
+----
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import viewa.test.ApplicationTrapper;
+
+public class CountryMasterViewTest {
+   private static ApplicationTrapper appTrapper;
+   
+   @BeforeClass public static void initialization() throws Exception{
+           // Building the ApplicationTrapper
+   }
+
+   //...Tests using the @Test annotation 
+
+   @AfterClass public static void finalization(){
+           // Closing the application
+   }
+}
+----
+
+Because of Viewa's startup lifecycle, the creation of the application should be
+placed in a method with the @BeforeClass annotation. When all tests has been
+executed application should be closed within a static method with the
+@AfterClass annotation. 
+
+This way you can run all tests against one instance application.
+
+You can use classical JUnit test cases but you will be running one application
+instance per test using the setUp() method for creating the application, and
+tearDown() for shutting the application down. It's not recommended to create an
+application instance at the constructor because at the end you will have to
+release it by hand.
+
+[source, java]
+----
+class MyApplicationRootViewTest extends TestCase{
+
+    private ApplicationTrapper app;
+    
+    /* (non-Javadoc)
+     * @see junit.framework.TestCase#setUp()
+     */
+    public void setUp()throws Exception{
+     /* Creating a new application before each test */
+        app = new ApplicationTrapper(new                                                                                                                    DefaultApplicationLauncher().
+execute(MyApplication.class));
+     /* Setting delay between calls */
+        app.getSettings().setTimeBeforeNextEvent(2500);
+    }
+
+       //...Tests using the testXXX() method convention
+
+    /* (non-Javadoc)
+     * @see junit.framework.TestCase#tearDown()
+     */
+    public void tearDown(){
+     /* At the end of every test the application is closed */
+        app.close();
+    }
+    
+}
+----
+
+Using the maven's quick-start archetype there's one example for each testing way.
+
+=== Trappers
+
+Inspired in Fest testing Viewa has its Trappers (Test­Wrappers) for wrapping
+application's common types with additional methods. Those methods brings
+testing capabilities to the objects they represent. 
+
+First Application object should be created and wrapped in an
+ApplicationTrapper. 
+
+[source, java]
+----
+@BeforeClass 
+public static void initialization() throws Exception{
+   appTrapper = 
+        new ApplicationTrapper(
+            new SpringApplicationLauncher()
+                .execute(ConceptApplication.class));
+
+   appTrapper.getSettings().setTimeBeforeNextEvent(2500);
+}
+----
+
+In the example and in most of cases application instance should be retrieved
+from the execute(...) method from the given AbstractApplicationLauncher
+implementation (This time is a SpringApplicationLauncher). 
+
+That application instance is wrapped inside an ApplicationTrapper. This trapper
+is the most important because all the rest of trappers are created from it. 
+
+Viewa testing is also focused in views. Application trappers can create view
+trappers and at this scope components that belong to that view can be tested. 
+
+How can be tested ? The following code block tests a button that belongs to a
+specific view. 
+
+[source, java]
+----
+@Test 
+public void genreWindow() throws Exception{
+  appTrapper.view(NavigationView.ID).
+        button("country").
+        requireEnabled().
+        click(10000);
+}
+----
+
+The test checks that button “country” should be enabled before performing a
+click on it. Finally if the assertion (requireEnabled()) went OK, the test
+performs the click and waits ten seconds until the next action is performed. 
+

@@ -9,4 +9,352 @@ are only going to face a single object the AbtractViewController.
 
 ==== AbstractViewController
 
+[source, java]
+----
+public abstract class AbstractViewController<EL extends EventListener,EO extends EventObject> 
+    implements ViewController<EL,EO>,ViewContainerLocatorAware
+----
+
+Let's explain that with an example. Suppose you want to add an action to a
+button component called cancel, then you know it needs an ActionListener, and
+every ActionListener handle ActionEvent objects. Then you extend and
+AbstractViewController like this: 
+
+[source, java]
+----
+include::../widget/src/main/java/viewa/widget/controller/LoginViewController.java[]
+----
+
+As you see the only you have to do is to fill the generic information of the
+class with the listener and events you are going to handle. Also is mandatory
+to inform the class again what kind of listener it is going to look like. 
+
+Having this in mind every AbstractViewController has three methods where the
+user can write its logic depending if it's a long task or if it is just an UI
+update. 
+
+Methods where the user should update the GUI are :
+
+[source, java]
+----
+public void preHandlingView(ViewContainer view, EO eventObject)
+public void postHandlingView(ViewContainer view, EO eventObject)
+public void postHandlingViewOnError(ViewContainer view,EO eventObject,BackgroundException ex)
+----
+
+The method where the user should write the code for long running tasks is:
+
+[source, java]
+----
+public void handleView(ViewContainer view, EO eventObject)throws BackgroundException
+----
+
+The order this three methods are executed is 
+
+* preHandlingView 
+* handleView 
+* postHandlingView / postHandlingViewOnError (If the handleView method throws a BackgroundException then postHandlingViewOnError will be called otherwise postHandlingView will be the next called method)
+
+The three methods are executed sequentially, but the first and the last one are executed in the event 
+dispatch thread while handleView is executed in other different thread. 
+
+==== AbstractViewControllerWorker
+
+The approach the AbstractViewController gives should fit most of the needs of
+the developer, but if you need more control over a long task, for monitoring
+purposes, you can use the
+org.viewaframework.controller.AbstractViewControllerWorker which extends
+SwingWorker and has additional methods for controlling tasks asynchronously. 
+
+The Signature of the class is the following: 
+
+[source, java]
+----
+public abstract class AbstractViewControllerWorker<EL extends EventListener,EO extends
+    EventObject,T,V> extends SwingWorker<T,V> implements ViewController<EL,EO>
+----
+
+It scares a little bit but let's do the cancel button controller example with this case:
+
+[source, java]
+----
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.List;
+
+import viewa.controller.AbstractViewControllerWorker;
+import viewa.view.ViewContainer;
+
+public class CancelButtonController extends
+        AbstractViewControllerWorker<ActionListener, ActionEvent, String, String> {
+    
+    public Class<ActionListener> getSupportedClass() {
+        return ActionListener.class;
+    }
+
+    @Override
+    public void handleViewProgress(ViewContainer view, ActionEvent eventObject,
+            Integer progress) {
+    }
+
+    @Override
+    public void handleViewPublising(ViewContainer view2,
+            ActionEvent eventObject2, List<String> chunks) {
+    }
+}
+----
+
+Here there are two more mandatory methods:
+
+[source, java]
+----
+public void handleViewProgress(ViewContainer view, EO eventObject,Integer progress)
+public void handleViewPublising(ViewContainer view2,EO eventObject2, List<V> chunks)
+----
+
+The first one receives information from the SwingWorker method setProgress(int progress). The 
+second one handles the objects published for the SwingWorker method publish(V value). The S 
+element in the SwingWorker signature is the value that doInBackground method returns, but, in this 
+implementation, that method executes handleView method and returns null. 
+
+Then, the developer should use the following methods: 
+
+public void handleView(ViewContainer view, EO eventObject): (No EDT) For executing background tasks. You can use setProgress(int progress)(It will call handleViewProgress(...)) or publiesh(V value)(It will call handleViewPublishing(...)) to update the GUI. 
+public abstract void handleViewProgress(ViewContainer view, EO eventObject,Integer progress): It receives the current progresion of the background task. (EDT) 
+public abstract void  handleViewPublising(ViewContainer view2, EO eventObject2,List<V> chunks) : It receives the current element published from the background tasks (EDT) 
+public void postHandlingView(ViewContainer view, EO eventObject) : Executed once the baskground task has finished (EDT) 
+public void preHandlingView(ViewContainer view, EO eventObject) : It is executed when the SwingWorker has been initialized and before handleView is executed (EDT)
+
+EDT = Executed in EventDispatchThread
+
+AbstractViewControllerWorker is still in beta development. It creates a new SwingWorker object 
+every time the controller is executed. 
+
+=== Connecting controllers to components: ViewControllerDispatcher
+
+NOTE: Since version 1.0.2 the recommended way of attaching controllers to a
+view is through annotations (Chapter 6.3).
+
+Once you have created a controller, the way you have to connect it to a
+specific component is done through the application's
+org.viewaframework.controller.ViewControllerDispatcher. 
+
+In a default application the most common way of adding a controller is getting
+the default controller dispatcher and add a controller entry within the
+prepareUI method: 
+
+[source, java]
+----
+@Override
+public void prepareUI() {
+    try {
+        //...
+        ViewControllerDispatcher dispatcher = this.getControllerDispatcher();
+
+        dispatcher.addController(
+            ViewManager.ROOT_VIEW_ID + "." + "exit", 
+            new ExitController());
+
+        } catch (ViewException e) {
+               System.out.println(e.getMessage());
+        }
+}
+----
+
+Or adding an already prepared java.util.Map with all the entries with the
+ViewControllerDispatcher.setControllers(Map<String,ViewController>) doing it in
+one step.  As you can see all you have to do is adding a ViewController with an
+specific key. This key must follow this rule: 
+
+                        “idOfTheView” + “.” + “nameOfTheComponent” 
+
+The second part of the key can use Java regular expression, that way you can
+write a key like “navigationViewId.*Action” which matches all the components
+within the view with the id “navigationViewId” that end with “Action”
+(exitAction, deleteAction...). 
+
+NOTE: Keep in mind that “*” is going to be translated in “.*” because it would
+be very ugly an expression like “navigationViewId..*Action”.  May be in later
+versions the second part of the sentence could  be changed to avoid this
+translation. 
+
+When an action is initialized the application ask the view controller
+dispatcher what expressions match the view, the view controller dispatcher
+gives them to the application, the application gives them to the ViewManager
+and finally the controllers are injected to the named components within the
+ViewContainer. 
+
+Using The ViewControllerDispatcher you can share controllers between different
+views. And is the recommended way of adding controllers to the application.
+There could be different cases: 
+
+* Little application: Adding controllers in the prepareUI method through the
+addController(...) method 
+* Bigger applications: Having a class that handles a
+Map with controllers, and adding that map in the prepareUI method through
+ViewDispatcher.setControllers(Map) method. 
+
+Anyway I always recommend the second approach. 
+
+However if you want to use a given set of controllers for a specific view you can provide a map of 
+ViewController object using one of the following methods: 
+
+[source, java]
+----
+public void setViewControllerMap(Map<String,List<ViewController<? extends EventListener,?extends EventObject>>> viewControllerMap)
+
+public Map<String,List<ViewController<? extends EventListener,? extends EventObject>>>getViewControllerMap()
+----
+
+=== @Controller and @Controller
+
+Since version 1.0.2 controllers can be attached to specific views through
+annotations. A ViewContainer can have a @Controllers annotation with nested
+@Controller annotations. Each @Controller annotation represents an
+AbstractViewController.
+
+The @Controllers annotation can only have an array of @Controller annotations.
+@Controller annotation has the following attributes:
+
+* type:  It's a required attribute. It's the class of the Controller you want to add to this view.
+* pattern: Mandatory. It's the pattern that matches the components this controller is going to listen at.
+* viewId: You can use it to apply this controller to a different view, other than the view you are annotating.
+* id: If the application is using an inversion of control container, this must be the id of the object you want to retrieve from the ioc context. 
+
+Watch the following code:
+
+[source, java]
+----
+package examples;
+
+import viewa.annotation.Controller;
+import viewa.annotation.Controllers;
+import viewa.view.DefaultViewContainer;
+import viewa.view.ViewManager;
+
+@Controllers({
+    @Controller(type=AddViewController.class,pattern="addViewButton"),
+    @Controller(viewId=ViewManager.ROOT_VIEW_ID,type=ExitController.class,pattern="exit")
+})
+public class NavigationView extends DefaultViewContainer{
+    public static final String ID = "navigationView";
+    public NavigationView(){
+            super(ID,new NavigationViewPanel());
+    }
+}
+----
+
+Here you have a view with two controllers, the first one is applied to
+components of this view with name “addViewButton” and it's class is
+AddViewController. The second one is not applied to the current view but to the
+root view (viewId=ViewManager.ROOT_VIEW_ID), it's class is ExitController and
+the controller is going to be triggered by components having  “exit” as their
+name.
+
+=== Accessing views
+
+Suppose your are within a controller and you want to access a given view which
+is not the view the controller gave you. You can access by two means to other
+ViewContainer. 
+
+First way is accessing the current view map, which has all available views in
+application. 
+
+[source, java]
+----
+@Override
+protected void postHandlingViewCancel(
+    DetailView<Book> view,
+    ActionEvent eventObject, 
+    Book value) throws Exception {
+        BookMasterView.class.cast(
+            view
+                .getApplication()
+                .getViewManager()
+                .getViews()
+                .get(BookMasterView.ID))
+                    .getModel()
+                    .addAll(this.bookList);
+}
+----
+
+That was the “hard” way. The easy way is available since version 1.0.1. Since
+version 1.0.1 all controllers that inherit from AbstractViewCotroller have a
+few new methods that makes retrieving views easier: 
+
+[source, java]
+----
+public <U extends ViewContainer> ViewContainerLocator<U> locate(Class<U> clazz);
+public ViewContainer locate(String name);
+public ViewContainerFrame locateRootView();
+----
+
+The following example finds a view of type BookMasterView with name BookMasterView.ID.
+
+[source, java]
+----
+ @Override
+protected void postHandlingViewCancel(DetailView<Book> view,
+       ActionEvent eventObject, Book value) throws Exception {
+       locate(BookMasterView.class)
+            .named(BookMasterView.ID)
+            .getModel()
+            .addAll(this.bookList);
+ }
+----
+
+locate(Class<U> clazz) returns a ViewContainerLocator where <U> is the type of
+the ViewContainer you want to retrieve. ViewContainerLocator has a method
+called named(String viewId) that returns the view that matching the name passed
+as parameter. 
+
+=== Accessing UI components
+
+As you noticed at the bottom of a DefaultApplication there are a message zone
+(bottom­left) and a progress bar with an info button (bottom­right). By default
+the info button and the progress bar are just components doing nothing by
+theirselves. 
+
+I can access them by the useful methods I mentioned before, but accessing them
+from the rootView and giving their component name. Names are: 
+
+* StatusBar.STATUS_BAR_NAME: The progress bar (JprogressBar) 
+* StatusBar.LEFT_PANEL_LABEL: The left message area. Is a JLabel component 
+* StatusBar.PROGRESS_INFO_BUTTON: The progress info button 
+
+For example for getting the JProgressBar the roor view:
+
+[source, java]
+----
+(JProgressBar) DefaultViewContainerFrame.
+    class.cast(view.getApplication().getViewManager().getRootView()).
+                              getComponentByName(StatusBar.STATUS_BAR_NAME)
+----
+
+A little bit ugly right? 
+
+Well, since version 1.0.1 there is a class called
+org.viewaframework.util.ComponentFinder that helps you finding UI components
+and casting them to their right type. 
+
+It comes very handy in controllers but it can be used in any place where a
+ViewContainer instance exists. All you have to do is make a static import of
+the find method of ComponentFinder. Let me show you the new version of getting
+the JProgressBar object. 
+
+[source, java]
+----
+import static org.viewaframework.util.ComponentFinder.find;
+    //....
+    controllerProgress = find(JProgressBar.class).
+                   in(view).named(StatusBar.STATUS_BAR_NAME);
+----
+
+It builds a more natural way of retrieving ui objects. The find method needs
+the type you expect the component will be. The in method receives the
+ViewContainer where the component lives, and finally the named method returns
+the component which name matches with its parameter. 
+
+The example can now be read like “find a JProgressBar.class within that view
+which name is StatusBar.STATUS_BAR_NAME” 
 

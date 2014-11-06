@@ -1,0 +1,24 @@
+== Model
+
+Right now the model support available for views is limited, is planned to make a binding solution 
+between components and the objects stored within the view. 
+
+You can add model objects and remove them to and from a view. For example if you are in a 
+controller which is going to add a view, you can add as many objects as you like to that view before 
+opening it (Of course it must be instantiated first), or even if the view is already visible. 
+
+[source, java]
+----
+public void addModelValue(String alias, Object object)
+----
+
+Every object should be added to a view with an unique id. That way once we are in the scope of the 
+view we can retrieve a given object by its key with the method. 
+
+[source, java]
+----
+public synchronized Object getModelValue(String alias)
+----
+
+
+

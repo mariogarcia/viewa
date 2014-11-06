@@ -17,3 +17,12 @@ include::06_views.ad[]
 
 include::07_controllers.ad[]
 
+include::08_model.ad[]
+
+include::09_testing.ad[]
+
+include::10_spring.ad[]
+
+include::11_docking.ad[]
+
+include::12_widget.ad[]
