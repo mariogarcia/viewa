@@ -1,31 +1,9 @@
 (ns views
+  (:require [ui])
   (:import
-    (org.jdesktop.swingx JXTaskPane JXTaskPaneContainer JXHyperlink)
     (viewa.widget.controller EditActionController ExitActionController AboutActionController)
     (viewa.annotation Controllers Controller)
     (viewa.view DefaultViewContainerFrame)))
-
-(defn link []
-  "Creates an action link"
-  (doto
-    (JXHyperlink.)
-    (.setName "textPanelLinkName")
-    (.setText "Show text panel")))
-
-(defn taskPanel []
-    "Creates a task panel"
-    (doto
-      (JXTaskPane.)
-      (.setName "imageView")
-      (.setTitle "Images")
-      (.add (link))))
-
-(defn navigationPanel[]
-    "Creates de navigation panel"
-    (doto
-      (JXTaskPaneContainer.)
-      (.setName "navigationPanel")
-      (.add (taskPanel))))
 
 (gen-class
   :name
@@ -45,7 +23,6 @@
 
 (defn navigation-init []
    "Setting id and inner component"
-   [ ["navigationViewID" (navigationPanel)]])
-
+   [ ["navigationViewID" (ui/navigationPanel)]])
 
 
